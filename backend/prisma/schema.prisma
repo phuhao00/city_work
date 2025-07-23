@@ -1,0 +1,155 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  JOBSEEKER
+  EMPLOYER
+  ADMIN
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(JOBSEEKER)
+  avatar    String?  // URL to avatar image
+  bio       String?  @db.Text
+  location  String?
+  phone     String?
+  website   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  company       Company?        @relation(fields: [companyId], references: [id])
+  companyId     String?
+  jobsPosted    Job[]           @relation("EmployerJobs")
+  applications  Application[]   @relation("ApplicantApplications")
+  sentMessages  Message[]       @relation("MessageSender")
+  receivedMessages Message[]    @relation("MessageReceiver")
+  savedJobs     SavedJob[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Company {
+  id          String   @id @default(uuid())
+  name        String
+  logo        String?  // URL to company logo
+  website     String?
+  description String?  @db.Text
+  industry    String?
+  size        String?  // e.g., "1-10", "11-50", "51-200", etc.
+  founded     Int?     // Year founded
+  location    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  users       User[]   // Company employees/admins
+  jobs        Job[]    // Jobs posted by this company
+
+  @@index([name])
+}
+
+model Job {
+  id                  String    @id @default(uuid())
+  title               String
+  description         String    @db.Text
+  requirements        String    @db.Text
+  responsibilities    String    @db.Text
+  location            String
+  remote              Boolean   @default(false)
+  salary              Json?     // { "min": 50000, "max": 70000, "currency": "USD" }
+  jobType             JobType   @default(FULL_TIME)
+  category            String
+  applicationDeadline DateTime?
+  postedAt            DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Relations
+  company             Company   @relation(fields: [companyId], references: [id])
+  companyId           String
+  postedBy            User      @relation("EmployerJobs", fields: [postedById], references: [id])
+  postedById          String
+  applications        Application[]
+  savedBy             SavedJob[]
+
+  @@index([title])
+  @@index([location])
+  @@index([category])
+  @@index([jobType])
+  @@index([remote])
+  @@index([companyId])
+}
+
+model Application {
+  id           String   @id @default(uuid())
+  status       String   @default("pending") // pending, reviewed, interviewed, rejected, accepted
+  resumeUrl    String   // URL to uploaded resume
+  coverLetter  String?  @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  job          Job      @relation(fields: [jobId], references: [id])
+  jobId        String
+  applicant    User     @relation("ApplicantApplications", fields: [applicantId], references: [id])
+  applicantId  String
+
+  @@unique([jobId, applicantId]) // One application per job per user
+  @@index([status])
+  @@index([jobId])
+  @@index([applicantId])
+}
+
+model SavedJob {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  // Relations
+  job       Job      @relation(fields: [jobId], references: [id])
+  jobId     String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+
+  @@unique([jobId, userId]) // A job can only be saved once by a user
+  @@index([userId])
+  @@index([jobId])
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  sender     User     @relation("MessageSender", fields: [senderId], references: [id])
+  senderId   String
+  receiver   User     @relation("MessageReceiver", fields: [receiverId], references: [id])
+  receiverId String
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([read])
+}
