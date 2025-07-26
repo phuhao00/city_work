@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Work - 高级功能演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .feature-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #2d3748;
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+        }
+
+        .demo-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .tech-stack {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .tech-stack h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2d3748;
+            font-size: 2rem;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .tech-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            background: #f7fafc;
+            transition: transform 0.3s ease;
+        }
+
+        .tech-item:hover {
+            transform: scale(1.05);
+        }
+
+        .tech-item .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #48bb78;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 City Work 高级功能</h1>
+            <p>探索我们最新的企业级功能和增强体验</p>
+        </div>
+
+        <div class="features-grid">
+            <!-- 通知系统 -->
+            <div class="feature-card">
+                <span class="feature-icon">🔔</span>
+                <h3 class="feature-title">智能通知系统</h3>
+                <p class="feature-description">实时接收重要更新，个性化通知设置，永不错过关键信息。</p>
+                <ul class="feature-list">
+                    <li>实时推送通知</li>
+                    <li>分类管理（工作、消息、系统）</li>
+                    <li>个性化设置</li>
+                    <li>批量操作</li>
+                    <li>通知历史记录</li>
+                </ul>
+                <button class="demo-button" onclick="showNotificationDemo()">
+                    <span class="status-indicator"></span>体验通知功能
+                </button>
+            </div>
+
+            <!-- 公司档案 -->
+            <div class="feature-card">
+                <span class="feature-icon">🏢</span>
+                <h3 class="feature-title">企业档案页面</h3>
+                <p class="feature-description">深入了解企业文化、团队信息和发展机会，做出明智的职业选择。</p>
+                <ul class="feature-list">
+                    <li>详细公司信息</li>
+                    <li>企业文化展示</li>
+                    <li>员工福利介绍</li>
+                    <li>在招职位列表</li>
+                    <li>公司评价系统</li>
+                </ul>
+                <button class="demo-button" onclick="showCompanyDemo()">
+                    <span class="status-indicator"></span>查看企业档案
+                </button>
+            </div>
+
+            <!-- 申请追踪 -->
+            <div class="feature-card">
+                <span class="feature-icon">📋</span>
+                <h3 class="feature-title">申请追踪系统</h3>
+                <p class="feature-description">全程跟踪求职申请状态，管理面试安排，记录重要备注。</p>
+                <ul class="feature-list">
+                    <li>申请状态实时更新</li>
+                    <li>面试时间管理</li>
+                    <li>个人备注功能</li>
+                    <li>进度可视化</li>
+                    <li>历史记录查询</li>
+                </ul>
+                <button class="demo-button" onclick="showApplicationDemo()">
+                    <span class="status-indicator"></span>管理申请状态
+                </button>
+            </div>
+
+            <!-- 用户设置 -->
+            <div class="feature-card">
+                <span class="feature-icon">⚙️</span>
+                <h3 class="feature-title">个性化设置</h3>
+                <p class="feature-description">自定义您的使用体验，设置偏好和隐私选项，打造专属工作空间。</p>
+                <ul class="feature-list">
+                    <li>通知偏好设置</li>
+                    <li>隐私控制</li>
+                    <li>求职偏好配置</li>
+                    <li>账户安全管理</li>
+                    <li>界面个性化</li>
+                </ul>
+                <button class="demo-button" onclick="showSettingsDemo()">
+                    <span class="status-indicator"></span>个性化设置
+                </button>
+            </div>
+
+            <!-- 数据分析 -->
+            <div class="feature-card">
+                <span class="feature-icon">📊</span>
+                <h3 class="feature-title">企业数据分析</h3>
+                <p class="feature-description">为企业用户提供深度数据洞察，优化招聘策略和人才管理。</p>
+                <ul class="feature-list">
+                    <li>招聘数据统计</li>
+                    <li>申请者分析</li>
+                    <li>绩效指标监控</li>
+                    <li>趋势预测</li>
+                    <li>自定义报表</li>
+                </ul>
+                <button class="demo-button" onclick="showAnalyticsDemo()">
+                    <span class="status-indicator"></span>查看数据分析
+                </button>
+            </div>
+
+            <!-- 社交动态 -->
+            <div class="feature-card">
+                <span class="feature-icon">📱</span>
+                <h3 class="feature-title">社交动态增强</h3>
+                <p class="feature-description">已有的社交动态功能现已全面升级，支持更多互动和内容类型。</p>
+                <ul class="feature-list">
+                    <li>多媒体内容发布</li>
+                    <li>智能搜索和标签</li>
+                    <li>实时互动功能</li>
+                    <li>内容推荐算法</li>
+                    <li>专业网络建设</li>
+                </ul>
+                <button class="demo-button" onclick="window.open('feed-demo.html', '_blank')">
+                    <span class="status-indicator"></span>体验社交动态
+                </button>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <h2>🛠️ 技术架构</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <span class="icon">📱</span>
+                    <h4>React Native</h4>
+                    <p>跨平台移动应用</p>
+                </div>
+                <div class="tech-item">
+                    <span class="icon">🔷</span>
+                    <h4>TypeScript</h4>
+                    <p>类型安全开发</p>
+                </div>
+                <div class="tech-item">
+                    <span class="icon">🏗️</span>
+                    <h4>NestJS</h4>
+                    <p>企业级后端框架</p>
+                </div>
+                <div class="tech-item">
+                    <span class="icon">🍃</span>
+                    <h4>MongoDB</h4>
+                    <p>文档数据库</p>
+                </div>
+                <div class="tech-item">
+                    <span class="icon">🔍</span>
+                    <h4>Elasticsearch</h4>
+                    <p>全文搜索引擎</p>
+                </div>
+                <div class="tech-item">
+                    <span class="icon">⚡</span>
+                    <h4>Redis</h4>
+                    <p>高性能缓存</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 City Work Platform - 打造未来工作方式</p>
+        </div>
+    </div>
+
+    <script>
+        function showNotificationDemo() {
+            alert('🔔 通知系统演示\n\n✅ 您有3条新的工作机会通知\n✅ 2条面试邀请待确认\n✅ 1条系统更新提醒\n\n点击可查看详细内容并进行相应操作。');
+        }
+
+        function showCompanyDemo() {
+            alert('🏢 企业档案演示\n\n📊 科技创新有限公司\n👥 员工规模：500-1000人\n🌟 企业评分：4.8/5.0\n💼 在招职位：15个\n🎯 主营业务：人工智能、大数据\n\n查看完整企业信息和在招职位...');
+        }
+
+        function showApplicationDemo() {
+            alert('📋 申请追踪演示\n\n📝 总申请数：8个\n⏳ 待处理：3个\n👀 面试中：2个\n✅ 已通过：1个\n❌ 已拒绝：2个\n\n点击查看每个申请的详细状态和备注...');
+        }
+
+        function showSettingsDemo() {
+            alert('⚙️ 个性化设置演示\n\n🔔 通知设置：已开启\n🔒 隐私模式：标准\n💼 求职偏好：技术类职位\n🌙 深色模式：已启用\n📍 地区偏好：北京、上海\n\n自定义您的专属体验...');
+        }
+
+        function showAnalyticsDemo() {
+            alert('📊 数据分析演示\n\n📈 本月招聘数据：\n• 发布职位：25个\n• 收到简历：156份\n• 面试安排：42场\n• 成功入职：8人\n\n📊 转化率分析、趋势预测等更多数据洞察...');
+        }
+
+        // 添加一些动态效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.feature-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>

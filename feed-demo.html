@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>城市工作 - Feed页面改进演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            gap: 12px;
+        }
+
+        .search-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 8px 12px;
+            gap: 8px;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: none;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .create-button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .search-results {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .feed-item {
+            margin: 8px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .author-section {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            background: #007AFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .author-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .type-icon {
+            font-size: 16px;
+        }
+
+        .author-title {
+            color: #666;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+
+        .timestamp {
+            color: #999;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .content {
+            font-size: 15px;
+            line-height: 22px;
+            margin-bottom: 12px;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            background: rgba(0, 122, 255, 0.2);
+            color: #007AFF;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 12px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .action-button:hover {
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .type-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .type-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .type-button.selected {
+            background: rgba(0, 122, 255, 0.2);
+            border-color: #007AFF;
+            color: #007AFF;
+        }
+
+        .submit-button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .submit-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 64px 32px;
+            color: #666;
+        }
+
+        .empty-button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部搜索栏 -->
+        <div class="header">
+            <div class="search-container">
+                <span>🔍</span>
+                <input type="text" class="search-input" placeholder="搜索动态、用户或标签..." id="searchInput">
+                <button onclick="clearSearch()" id="clearButton" style="display: none; background: none; border: none; cursor: pointer;">✕</button>
+            </div>
+            <button class="create-button" onclick="showCreateModal()">发布</button>
+        </div>
+
+        <!-- 搜索结果提示 -->
+        <div class="search-results" id="searchResults" style="display: none;">
+            找到 <span id="resultCount">0</span> 条相关动态
+        </div>
+
+        <!-- 动态列表 -->
+        <div id="feedContainer">
+            <!-- 动态项目将通过JavaScript动态生成 -->
+        </div>
+
+        <!-- 空状态 -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div>暂无动态</div>
+            <button class="empty-button" onclick="showCreateModal()">发布第一条动态</button>
+        </div>
+    </div>
+
+    <!-- 发布模态框 -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">发布动态</h2>
+                <button class="close-button" onclick="hideCreateModal()">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">选择类型</label>
+                <div class="type-buttons">
+                    <button class="type-button selected" data-type="user_achievement">
+                        <span>🎉</span>
+                        <span>个人成就</span>
+                    </button>
+                    <button class="type-button" data-type="job_post">
+                        <span>💼</span>
+                        <span>职位发布</span>
+                    </button>
+                    <button class="type-button" data-type="company_update">
+                        <span>🏢</span>
+                        <span>公司动态</span>
+                    </button>
+                    <button class="type-button" data-type="industry_news">
+                        <span>📰</span>
+                        <span>行业资讯</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">内容</label>
+                <textarea class="form-textarea" id="postContent" placeholder="分享你的想法..." maxlength="500"></textarea>
+                <div style="text-align: right; font-size: 12px; color: #666; margin-top: 4px;">
+                    <span id="charCount">0</span>/500
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">标签 (可选)</label>
+                <input type="text" class="form-input" id="postTags" placeholder="用逗号分隔多个标签，如：前端开发,React,招聘" maxlength="100">
+            </div>
+
+            <button class="submit-button" onclick="submitPost()" id="submitButton" disabled>发布</button>
+        </div>
+    </div>
+
+    <script>
+        // 模拟数据
+        let feedData = [
+            {
+                _id: '1',
+                type: 'job_post',
+                author: {
+                    name: '腾讯科技',
+                    title: 'HR招聘专员',
+                    company: '腾讯科技'
+                },
+                content: '我们正在寻找优秀的前端工程师加入我们的团队！要求熟悉React、Vue等前端框架，有3年以上工作经验。薪资面议，福利优厚。',
+                likes: 128,
+                comments: 23,
+                shares: 15,
+                isLiked: false,
+                createdAt: '2024-01-15T10:30:00Z',
+                tags: ['前端工程师', '腾讯', '招聘']
+            },
+            {
+                _id: '2',
+                type: 'user_achievement',
+                author: {
+                    name: '张小明',
+                    title: '高级产品经理',
+                    company: '字节跳动'
+                },
+                content: '很高兴分享，我刚刚通过了PMP认证考试！感谢团队的支持和帮助。继续在产品管理的道路上前进！',
+                likes: 89,
+                comments: 12,
+                shares: 8,
+                isLiked: true,
+                createdAt: '2024-01-15T09:15:00Z',
+                tags: ['PMP认证', '产品经理', '职业发展']
+            },
+            {
+                _id: '3',
+                type: 'industry_news',
+                author: {
+                    name: '科技日报',
+                    title: '官方媒体',
+                    company: '科技日报'
+                },
+                content: '2024年AI行业发展趋势报告发布：人工智能将在更多传统行业落地应用，预计创造500万个新就业岗位。',
+                likes: 256,
+                comments: 45,
+                shares: 78,
+                isLiked: false,
+                createdAt: '2024-01-15T08:00:00Z',
+                tags: ['AI', '人工智能', '就业趋势']
+            }
+        ];
+
+        let filteredData = [...feedData];
+        let selectedType = 'user_achievement';
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            renderFeed();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // 搜索功能
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            
+            // 内容输入字符计数
+            document.getElementById('postContent').addEventListener('input', updateCharCount);
+            
+            // 类型选择
+            document.querySelectorAll('.type-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.type-button').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedType = this.dataset.type;
+                });
+            });
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value;
+            const clearButton = document.getElementById('clearButton');
+            const searchResults = document.getElementById('searchResults');
+            
+            if (query.length > 0) {
+                clearButton.style.display = 'block';
+                filteredData = feedData.filter(item => 
+                    item.content.toLowerCase().includes(query.toLowerCase()) ||
+                    item.author.name.toLowerCase().includes(query.toLowerCase()) ||
+                    item.author.company.toLowerCase().includes(query.toLowerCase()) ||
+                    (item.tags && item.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase())))
+                );
+                searchResults.style.display = 'block';
+                document.getElementById('resultCount').textContent = filteredData.length;
+            } else {
+                clearButton.style.display = 'none';
+                searchResults.style.display = 'none';
+                filteredData = [...feedData];
+            }
+            
+            renderFeed();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            handleSearch();
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('feedContainer');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (filteredData.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            container.innerHTML = filteredData.map(item => createFeedItemHTML(item)).join('');
+        }
+
+        function createFeedItemHTML(item) {
+            const typeIcons = {
+                'job_post': '💼',
+                'company_update': '🏢',
+                'user_achievement': '🎉',
+                'industry_news': '📰'
+            };
+
+            const tagsHTML = item.tags ? item.tags.map(tag => 
+                `<span class="tag">#${tag}</span>`
+            ).join('') : '';
+
+            return `
+                <div class="feed-item">
+                    <div class="author-section">
+                        <div class="avatar">${item.author.name[0]}</div>
+                        <div class="author-info">
+                            <div class="author-header">
+                                <div class="author-name">${item.author.name}</div>
+                                <div class="type-icon">${typeIcons[item.type]}</div>
+                            </div>
+                            <div class="author-title">${item.author.title} · ${item.author.company}</div>
+                            <div class="timestamp">${formatTime(item.createdAt)}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="content">${item.content}</div>
+                    
+                    ${tagsHTML ? `<div class="tags-container">${tagsHTML}</div>` : ''}
+                    
+                    <div class="action-bar">
+                        <button class="action-button" onclick="toggleLike('${item._id}')">
+                            <span>${item.isLiked ? '❤️' : '🤍'}</span>
+                            <span>${item.likes}</span>
+                        </button>
+                        <button class="action-button">
+                            <span>💬</span>
+                            <span>${item.comments}</span>
+                        </button>
+                        <button class="action-button">
+                            <span>🔄</span>
+                            <span>${item.shares}</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
+
+            if (diffInHours < 1) {
+                return '刚刚';
+            } else if (diffInHours < 24) {
+                return `${Math.floor(diffInHours)}小时前`;
+            } else {
+                const diffInDays = Math.floor(diffInHours / 24);
+                return `${diffInDays}天前`;
+            }
+        }
+
+        function toggleLike(id) {
+            const item = feedData.find(item => item._id === id);
+            if (item) {
+                item.isLiked = !item.isLiked;
+                item.likes = item.isLiked ? item.likes + 1 : item.likes - 1;
+                
+                // 更新过滤数据
+                const filteredItem = filteredData.find(item => item._id === id);
+                if (filteredItem) {
+                    filteredItem.isLiked = item.isLiked;
+                    filteredItem.likes = item.likes;
+                }
+                
+                renderFeed();
+            }
+        }
+
+        function showCreateModal() {
+            document.getElementById('createModal').classList.add('show');
+        }
+
+        function hideCreateModal() {
+            document.getElementById('createModal').classList.remove('show');
+            // 重置表单
+            document.getElementById('postContent').value = '';
+            document.getElementById('postTags').value = '';
+            updateCharCount();
+        }
+
+        function updateCharCount() {
+            const content = document.getElementById('postContent').value;
+            const charCount = document.getElementById('charCount');
+            const submitButton = document.getElementById('submitButton');
+            
+            charCount.textContent = content.length;
+            submitButton.disabled = content.trim().length === 0;
+        }
+
+        function submitPost() {
+            const content = document.getElementById('postContent').value.trim();
+            const tags = document.getElementById('postTags').value;
+            
+            if (!content) return;
+            
+            const newPost = {
+                _id: Date.now().toString(),
+                type: selectedType,
+                author: {
+                    name: '当前用户',
+                    title: '软件工程师',
+                    company: '科技公司'
+                },
+                content: content,
+                likes: 0,
+                comments: 0,
+                shares: 0,
+                isLiked: false,
+                createdAt: new Date().toISOString(),
+                tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : []
+            };
+            
+            feedData.unshift(newPost);
+            
+            // 重新应用搜索过滤
+            const query = document.getElementById('searchInput').value;
+            if (query) {
+                handleSearch();
+            } else {
+                filteredData = [...feedData];
+                renderFeed();
+            }
+            
+            hideCreateModal();
+            alert('发布成功！');
+        }
+    </script>
+</body>
+</html>
