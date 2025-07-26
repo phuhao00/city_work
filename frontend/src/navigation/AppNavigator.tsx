@@ -9,7 +9,24 @@ import { useTheme } from '../theme/ThemeProvider';
 import { darkTheme } from '../theme/theme';
 
 // Import screens
-import { LoginScreen, RegisterScreen, JobListScreen, SearchScreen, HomeScreen, ProfileScreen, MessagesScreen, ChatScreen, JobDetailScreen } from '../components';
+import { 
+  LoginScreen, 
+  RegisterScreen, 
+  JobListScreen, 
+  SearchScreen, 
+  HomeScreen, 
+  ProfileScreen, 
+  MessagesScreen, 
+  ChatScreen, 
+  JobDetailScreen,
+  NotificationsScreen,
+  CompanyProfileScreen,
+  ApplicationsScreen,
+  SettingsScreen,
+  CompanyAnalyticsScreen
+} from '../components';
+import { FeedScreen } from '../components/feed/FeedScreen';
+import { NetworkScreen } from '../components/network/NetworkScreen';
 
 // Define navigation types
 export type RootStackParamList = {
@@ -17,6 +34,11 @@ export type RootStackParamList = {
   Main: undefined;
   JobDetail: { jobId: string };
   Chat: { conversationId: string; otherUser: any };
+  Notifications: undefined;
+  CompanyProfile: { companyId: string };
+  Applications: undefined;
+  Settings: undefined;
+  CompanyAnalytics: undefined;
 };
 
 export type AuthStackParamList = {
@@ -26,7 +48,9 @@ export type AuthStackParamList = {
 
 export type MainTabParamList = {
   Home: undefined;
+  Feed: undefined;
   Jobs: undefined;
+  Network: undefined;
   Messages: undefined;
   Profile: undefined;
 };
@@ -58,39 +82,77 @@ const MainNavigator = () => {
         tabBarStyle: {
           backgroundColor: theme.colors.background,
           borderTopColor: theme.colors.border,
+          paddingBottom: 5,
+          height: 60,
         },
         headerStyle: {
           backgroundColor: theme.colors.background,
         },
         headerTintColor: theme.colors.text,
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+        },
       }}
     >
       <Tab.Screen 
         name="Home" 
         component={HomeScreen} 
         options={{
-          // Add icon configuration later
+          title: '首页',
+          tabBarIcon: ({ color, size }) => (
+            <Text style={{ color, fontSize: size }}>🏠</Text>
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Feed" 
+        component={FeedScreen} 
+        options={{
+          title: '动态',
+          tabBarIcon: ({ color, size }) => (
+            <Text style={{ color, fontSize: size }}>📰</Text>
+          ),
         }}
       />
       <Tab.Screen 
         name="Jobs" 
         component={JobListScreen} 
         options={{
-          // Add icon configuration later
+          title: '职位',
+          tabBarIcon: ({ color, size }) => (
+            <Text style={{ color, fontSize: size }}>💼</Text>
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Network" 
+        component={NetworkScreen} 
+        options={{
+          title: '人脉',
+          tabBarIcon: ({ color, size }) => (
+            <Text style={{ color, fontSize: size }}>👥</Text>
+          ),
         }}
       />
       <Tab.Screen 
         name="Messages" 
         component={MessagesScreen} 
         options={{
-          // Add icon configuration later
+          title: '消息',
+          tabBarIcon: ({ color, size }) => (
+            <Text style={{ color, fontSize: size }}>💬</Text>
+          ),
         }}
       />
       <Tab.Screen 
         name="Profile" 
         component={ProfileScreen} 
         options={{
-          // Add icon configuration later
+          title: '我的',
+          tabBarIcon: ({ color, size }) => (
+            <Text style={{ color, fontSize: size }}>👤</Text>
+          ),
         }}
       />
     </Tab.Navigator>
@@ -125,12 +187,37 @@ const AppNavigator = () => {
             <Stack.Screen 
               name="JobDetail" 
               component={JobDetailScreen} 
-              options={{ headerShown: true, title: 'Job Details' }}
+              options={{ headerShown: true, title: '职位详情' }}
             />
             <Stack.Screen 
               name="Chat" 
               component={ChatScreen} 
-              options={{ headerShown: true, title: 'Chat' }}
+              options={{ headerShown: true, title: '聊天' }}
+            />
+            <Stack.Screen 
+              name="Notifications" 
+              component={NotificationsScreen} 
+              options={{ headerShown: true, title: '通知' }}
+            />
+            <Stack.Screen 
+              name="CompanyProfile" 
+              component={CompanyProfileScreen} 
+              options={{ headerShown: true, title: '公司详情' }}
+            />
+            <Stack.Screen 
+              name="Applications" 
+              component={ApplicationsScreen} 
+              options={{ headerShown: true, title: '我的申请' }}
+            />
+            <Stack.Screen 
+              name="Settings" 
+              component={SettingsScreen} 
+              options={{ headerShown: true, title: '设置' }}
+            />
+            <Stack.Screen 
+              name="CompanyAnalytics" 
+              component={CompanyAnalyticsScreen} 
+              options={{ headerShown: true, title: '数据分析' }}
             />
           </>
         )}

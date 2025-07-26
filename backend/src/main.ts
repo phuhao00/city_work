@@ -15,8 +15,30 @@ async function bootstrap() {
   // Set global prefix
   app.setGlobalPrefix(apiPrefix);
   
-  // Enable CORS
-  app.enableCors();
+  // Enable CORS with specific configuration
+  app.enableCors({
+    origin: [
+      'http://localhost:19006', // Expo web development server
+      'http://localhost:3000',  // Alternative frontend port
+      'http://localhost:8081',  // Expo Metro bundler
+      'http://127.0.0.1:19006', // Alternative localhost format
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:8081',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'Origin',
+      'X-Requested-With',
+      'Access-Control-Allow-Origin',
+      'Access-Control-Allow-Headers',
+      'Access-Control-Allow-Methods',
+    ],
+    credentials: true,
+    optionsSuccessStatus: 200,
+  });
   
   // Set up global validation pipe
   app.useGlobalPipes(

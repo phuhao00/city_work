@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,9 +6,17 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
+  Modal,
+  TextInput,
 } from 'react-native';
 import { useTheme } from '../../theme/ThemeProvider';
-import { useGetJobByIdQuery } from '../../services/jobsApi';
+import { 
+  useGetJobByIdQuery, 
+  useApplyForJobMutation, 
+  useSaveJobMutation, 
+  useUnsaveJobMutation 
+} from '../../features/jobs/jobsSlice';
 
 interface JobDetailScreenProps {
   route: {
@@ -30,6 +38,16 @@ export const JobDetailScreen: React.FC<JobDetailScreenProps> = ({ route, navigat
     refetch
   } = useGetJobByIdQuery(jobId);
 
+  // Mutations
+  const [applyForJob, { isLoading: isApplying }] = useApplyForJobMutation();
+  const [saveJob, { isLoading: isSaving }] = useSaveJobMutation();
+  const [unsaveJob, { isLoading: isUnsaving }] = useUnsaveJobMutation();
+  
+  // Local state
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const [coverLetter, setCoverLetter] = useState('');
+  const [isJobSaved, setIsJobSaved] = useState(false);
+
   const formatSalary = (min?: number, max?: number) => {
     if (!min && !max) return 'Salary not specified';
     if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
@@ -48,13 +66,51 @@ export const JobDetailScreen: React.FC<JobDetailScreenProps> = ({ route, navigat
   };
 
   const handleApply = () => {
-    // TODO: Implement job application logic
-    console.log('Apply for job:', jobId);
+    setShowApplicationModal(true);
   };
 
-  const handleSave = () => {
-    // TODO: Implement save job logic
-    console.log('Save job:', jobId);
+  const handleSubmitApplication = async () => {
+    try {
+      await applyForJob({
+        jobId,
+        coverLetter: coverLetter.trim() || undefined,
+      }).unwrap();
+      
+      setShowApplicationModal(false);
+      setCoverLetter('');
+      
+      Alert.alert(
+        'Application Submitted!',
+        'Your application has been successfully submitted. The employer will review it and get back to you.',
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      Alert.alert(
+        'Application Failed',
+        'There was an error submitting your application. Please try again.',
+        [{ text: 'OK' }]
+      );
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      if (isJobSaved) {
+        await unsaveJob(jobId).unwrap();
+        setIsJobSaved(false);
+        Alert.alert('Job Removed', 'Job removed from your saved list.');
+      } else {
+        await saveJob(jobId).unwrap();
+        setIsJobSaved(true);
+        Alert.alert('Job Saved', 'Job added to your saved list.');
+      }
+    } catch (error) {
+      Alert.alert(
+        'Error',
+        'There was an error saving the job. Please try again.',
+        [{ text: 'OK' }]
+      );
+    }
   };
 
   if (isLoading) {
@@ -173,16 +229,67 @@ export const JobDetailScreen: React.FC<JobDetailScreenProps> = ({ route, navigat
         <TouchableOpacity
           style={[styles.saveButton, { backgroundColor: theme.colors.background, borderColor: theme.colors.primary }]}
           onPress={handleSave}
+          disabled={isSaving || isUnsaving}
         >
-          <Text style={[styles.saveButtonText, { color: theme.colors.primary }]}>Save</Text>
+          <Text style={[styles.saveButtonText, { color: theme.colors.primary }]}>
+            {isSaving || isUnsaving ? 'Loading...' : isJobSaved ? 'Unsave' : 'Save'}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.applyButton, { backgroundColor: theme.colors.primary }]}
           onPress={handleApply}
+          disabled={isApplying}
         >
-          <Text style={styles.applyButtonText}>Apply Now</Text>
+          <Text style={styles.applyButtonText}>
+            {isApplying ? 'Applying...' : 'Apply Now'}
+          </Text>
         </TouchableOpacity>
       </View>
+
+      {/* Application Modal */}
+      <Modal
+        visible={showApplicationModal}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowApplicationModal(false)}
+      >
+        <View style={[styles.modalContainer, { backgroundColor: theme.colors.background }]}>
+          <View style={[styles.modalHeader, { borderBottomColor: theme.colors.border }]}>
+            <TouchableOpacity onPress={() => setShowApplicationModal(false)}>
+              <Text style={[styles.modalCancelText, { color: theme.colors.primary }]}>Cancel</Text>
+            </TouchableOpacity>
+            <Text style={[styles.modalTitle, { color: theme.colors.text }]}>Apply for Job</Text>
+            <TouchableOpacity onPress={handleSubmitApplication} disabled={isApplying}>
+              <Text style={[styles.modalSubmitText, { color: theme.colors.primary }]}>
+                {isApplying ? 'Submitting...' : 'Submit'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          
+          <ScrollView style={styles.modalContent}>
+            <Text style={[styles.modalJobTitle, { color: theme.colors.text }]}>{job?.title}</Text>
+            <Text style={[styles.modalCompanyName, { color: theme.colors.gray }]}>
+              {job?.company?.name || 'Company Name'}
+            </Text>
+            
+            <Text style={[styles.modalSectionTitle, { color: theme.colors.text }]}>Cover Letter (Optional)</Text>
+            <TextInput
+              style={[styles.coverLetterInput, { 
+                backgroundColor: theme.colors.card,
+                borderColor: theme.colors.border,
+                color: theme.colors.text
+              }]}
+              placeholder="Write a brief cover letter to introduce yourself..."
+              placeholderTextColor={theme.colors.gray}
+              multiline
+              numberOfLines={8}
+              textAlignVertical="top"
+              value={coverLetter}
+              onChangeText={setCoverLetter}
+            />
+          </ScrollView>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -325,5 +432,52 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  modalContainer: {
+    flex: 1,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+  },
+  modalCancelText: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalSubmitText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  modalContent: {
+    flex: 1,
+    padding: 20,
+  },
+  modalJobTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  modalCompanyName: {
+    fontSize: 16,
+    marginBottom: 24,
+  },
+  modalSectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  coverLetterInput: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    minHeight: 120,
   },
 });
