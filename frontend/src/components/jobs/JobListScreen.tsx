@@ -1,74 +1,163 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  FlatList, 
+  TouchableOpacity, 
+  ActivityIndicator,
+  RefreshControl,
+  Alert 
+} from 'react-native';
 import { useTheme } from '../../theme/ThemeProvider';
+import { useGetJobsQuery } from '../../services/jobsApi';
 
 interface JobListScreenProps {
   navigation?: any;
 }
 
-// Mock job data for now
-const mockJobs = [
-  {
-    _id: '1',
-    title: 'Frontend Developer',
-    company: { name: 'Tech Corp' },
-    location: 'New York, NY',
-    salary: { min: 80000, max: 120000 },
-    type: 'full-time',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: '2',
-    title: 'Backend Developer',
-    company: { name: 'StartupXYZ' },
-    location: 'San Francisco, CA',
-    salary: { min: 90000, max: 140000 },
-    type: 'full-time',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: '3',
-    title: 'UI/UX Designer',
-    company: { name: 'Design Studio' },
-    location: 'Los Angeles, CA',
-    salary: { min: 70000, max: 100000 },
-    type: 'contract',
-    createdAt: new Date().toISOString(),
-  },
-];
-
 export const JobListScreen: React.FC<JobListScreenProps> = ({ navigation }) => {
   const { theme } = useTheme();
+  const [refreshing, setRefreshing] = useState(false);
+  
+  const { 
+    data: jobs, 
+    isLoading, 
+    error, 
+    refetch 
+  } = useGetJobsQuery({
+    page: 1,
+    limit: 20
+  });
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refetch();
+    } catch (error) {
+      console.error('Failed to refresh jobs:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const handleJobPress = (job: any) => {
+    // Navigate to job detail when implemented
+    navigation?.navigate('JobDetail', { jobId: job._id });
+  };
+
+  const formatSalary = (salary: any) => {
+    if (!salary) return 'Salary not specified';
+    if (salary.min && salary.max) {
+      return `$${salary.min.toLocaleString()} - $${salary.max.toLocaleString()}`;
+    }
+    if (salary.min) {
+      return `From $${salary.min.toLocaleString()}`;
+    }
+    if (salary.max) {
+      return `Up to $${salary.max.toLocaleString()}`;
+    }
+    return 'Salary not specified';
+  };
 
   const renderJobItem = ({ item }: { item: any }) => (
     <TouchableOpacity 
-      style={[styles.jobCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}
-      onPress={() => {
-        // Navigate to job detail when implemented
-        console.log('Job selected:', item.title);
-      }}
+      style={[styles.jobCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}
+      onPress={() => handleJobPress(item)}
     >
       <Text style={[styles.jobTitle, { color: theme.colors.text }]}>{item.title}</Text>
-      <Text style={[styles.companyName, { color: theme.colors.gray }]}>{item.company.name}</Text>
-      <Text style={[styles.location, { color: theme.colors.gray }]}>{item.location}</Text>
+      <Text style={[styles.companyName, { color: theme.colors.gray }]}>
+        {item.company?.name || 'Company not specified'}
+      </Text>
+      <Text style={[styles.location, { color: theme.colors.gray }]}>
+        {item.location || 'Location not specified'}
+      </Text>
       <View style={styles.salaryContainer}>
         <Text style={[styles.salary, { color: theme.colors.primary }]}>
-          ${item.salary.min.toLocaleString()} - ${item.salary.max.toLocaleString()}
+          {formatSalary(item.salary)}
         </Text>
-        <Text style={[styles.jobType, { color: theme.colors.gray }]}>{item.type}</Text>
+        <Text style={[styles.jobType, { color: theme.colors.gray }]}>
+          {item.type || 'full-time'}
+        </Text>
       </View>
+      {item.description && (
+        <Text 
+          style={[styles.description, { color: theme.colors.gray }]} 
+          numberOfLines={2}
+        >
+          {item.description}
+        </Text>
+      )}
     </TouchableOpacity>
   );
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={[styles.emptyText, { color: theme.colors.gray }]}>
+        No jobs available at the moment
+      </Text>
+      <TouchableOpacity 
+        style={[styles.refreshButton, { backgroundColor: theme.colors.primary }]}
+        onPress={onRefresh}
+      >
+        <Text style={styles.refreshButtonText}>Refresh</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const renderError = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={[styles.emptyText, { color: theme.colors.error }]}>
+        Failed to load jobs
+      </Text>
+      <TouchableOpacity 
+        style={[styles.refreshButton, { backgroundColor: theme.colors.primary }]}
+        onPress={onRefresh}
+      >
+        <Text style={styles.refreshButtonText}>Try Again</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  if (isLoading && !refreshing) {
+    return (
+      <View style={[styles.container, styles.centered, { backgroundColor: theme.colors.background }]}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text style={[styles.loadingText, { color: theme.colors.gray }]}>Loading jobs...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <Text style={[styles.header, { color: theme.colors.text }]}>Available Jobs</Text>
+        {renderError()}
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Text style={[styles.header, { color: theme.colors.text }]}>Available Jobs</Text>
       <FlatList
-        data={mockJobs}
+        data={jobs?.data || []}
         renderItem={renderJobItem}
         keyExtractor={(item) => item._id}
-        contentContainerStyle={styles.listContainer}
+        contentContainerStyle={[
+          styles.listContainer,
+          (!jobs?.data || jobs.data.length === 0) && styles.emptyListContainer
+        ]}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[theme.colors.primary]}
+            tintColor={theme.colors.primary}
+          />
+        }
+        ListEmptyComponent={renderEmptyState}
       />
     </View>
   );
@@ -79,6 +168,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+  centered: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -86,6 +179,10 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     paddingBottom: 16,
+  },
+  emptyListContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
   jobCard: {
     padding: 16,
@@ -115,6 +212,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 8,
   },
   salary: {
     fontSize: 16,
@@ -123,5 +221,34 @@ const styles = StyleSheet.create({
   jobType: {
     fontSize: 14,
     textTransform: 'capitalize',
+  },
+  description: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  refreshButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  refreshButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
   },
 });

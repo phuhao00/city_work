@@ -10,12 +10,14 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     this.client = new Redis({
-      host: this.configService.get<string>('REDIS_HOST'),
-      port: this.configService.get<number>('REDIS_PORT'),
-      password: this.configService.get<string>('REDIS_PASSWORD'),
-      retryDelayOnFailover: 100,
-      enableReadyCheck: false,
-      maxRetriesPerRequest: null,
+      host: this.configService.get<string>('REDIS_HOST', 'localhost'),
+      port: this.configService.get<number>('REDIS_PORT', 6379),
+      password: this.configService.get<string>('REDIS_PASSWORD') || undefined,
+      retryDelayOnFailover: this.configService.get<number>('REDIS_RETRY_DELAY', 100),
+      enableReadyCheck: this.configService.get<boolean>('REDIS_READY_CHECK', false),
+      maxRetriesPerRequest: this.configService.get<number>('REDIS_MAX_RETRIES') || null,
+      connectTimeout: this.configService.get<number>('REDIS_CONNECT_TIMEOUT', 10000),
+      lazyConnect: this.configService.get<boolean>('REDIS_LAZY_CONNECT', true),
     });
 
     this.client.on('connect', () => {

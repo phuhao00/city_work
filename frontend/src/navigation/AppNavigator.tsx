@@ -9,31 +9,14 @@ import { useTheme } from '../theme/ThemeProvider';
 import { darkTheme } from '../theme/theme';
 
 // Import screens
-import { LoginScreen, JobListScreen, SearchScreen, HomeScreen, ProfileScreen, MessagesScreen } from '../components';
-
-// Temporary placeholder screens
-const RegisterScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text>Register Screen - Coming Soon</Text>
-  </View>
-);
-const JobDetailScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text>Job Detail Screen - Coming Soon</Text>
-  </View>
-);
-const ChatScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text>Chat Screen - Coming Soon</Text>
-  </View>
-);
+import { LoginScreen, RegisterScreen, JobListScreen, SearchScreen, HomeScreen, ProfileScreen, MessagesScreen, ChatScreen, JobDetailScreen } from '../components';
 
 // Define navigation types
 export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
   JobDetail: { jobId: string };
-  Chat: { chatId: string };
+  Chat: { conversationId: string; otherUser: any };
 };
 
 export type AuthStackParamList = {

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { apiSlice } from '../../services/api';
 
 interface AuthState {
   user: User | null;
@@ -13,7 +12,7 @@ interface User {
   _id: string;
   email: string;
   name: string;
-  role: 'jobseeker' | 'employer' | 'admin';
+  role: 'JOBSEEKER' | 'EMPLOYER' | 'ADMIN';
   avatar?: string;
   bio?: string;
   location?: string;
@@ -26,7 +25,7 @@ interface User {
 
 interface LoginResponse {
   user: User;
-  token: string;
+  access_token: string;
 }
 
 const initialState: AuthState = {
@@ -43,14 +42,19 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action: PayloadAction<LoginResponse>) => {
       state.user = action.payload.user;
-      state.token = action.payload.token;
+      state.token = action.payload.access_token;
       state.isAuthenticated = true;
       state.error = null;
+      state.isLoading = false;
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
+      state.error = null;
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
     },
     setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
@@ -59,39 +63,22 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    updateUser: (state, action: PayloadAction<Partial<User>>) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+      }
+    },
   },
 });
 
-export const { setCredentials, logout, setError, clearError } = authSlice.actions;
-
-export const authApiSlice = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    login: builder.mutation<LoginResponse, { email: string; password: string }>(
-      {
-        query: (credentials) => ({
-          url: '/auth/login',
-          method: 'POST',
-          body: credentials,
-        }),
-      }
-    ),
-    register: builder.mutation<
-      LoginResponse,
-      { name: string; email: string; password: string; role: 'jobseeker' | 'employer' }
-    >({
-      query: (userData) => ({
-        url: '/auth/register',
-        method: 'POST',
-        body: userData,
-      }),
-    }),
-    getMe: builder.query<User, void>({
-      query: () => '/auth/me',
-      providesTags: ['User'],
-    }),
-  }),
-});
-
-export const { useLoginMutation, useRegisterMutation, useGetMeQuery } = authApiSlice;
+export const { 
+  setCredentials, 
+  logout, 
+  setLoading, 
+  setError, 
+  clearError, 
+  updateUser 
+} = authSlice.actions;
 
 export default authSlice.reducer;
+export type { User, LoginResponse, AuthState };

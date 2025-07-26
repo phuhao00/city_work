@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/index';
-import { useLoginMutation } from '../../features/auth/authSlice';
+import { useLoginMutation } from '../../services/authApi';
 import { setCredentials } from '../../features/auth/authSlice';
 import { validateEmail, validatePassword } from '../../utils/validation';
 import { useTheme } from '../../theme/ThemeProvider';
@@ -52,11 +52,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     try {
       const result = await login({ email, password }).unwrap();
       dispatch(setCredentials(result));
-      navigation.navigate('Home');
+      // Navigation will be handled by AppNavigator based on auth state
     } catch (error: any) {
       Alert.alert(
         'Login Failed',
-        error.data?.message || 'An error occurred during login'
+        error.data?.message || error.message || 'An error occurred during login'
       );
     }
   };

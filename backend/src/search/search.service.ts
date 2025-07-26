@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SearchService {
-  constructor(private readonly elasticsearchService: ElasticsearchService) {}
+  constructor(
+    private readonly elasticsearchService: ElasticsearchService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async searchJobs(query: string, filters?: any) {
     const searchQuery = {
@@ -27,7 +31,7 @@ export class SearchService {
           },
         },
         sort: [{ createdAt: { order: 'desc' } }],
-        size: 20,
+        size: this.configService.get<number>('SEARCH_RESULTS_SIZE', 20),
       },
     };
 
@@ -57,7 +61,7 @@ export class SearchService {
           },
         },
         sort: [{ name: { order: 'asc' } }],
-        size: 20,
+        size: this.configService.get<number>('SEARCH_RESULTS_SIZE', 20),
       },
     };
 
@@ -87,7 +91,7 @@ export class SearchService {
           },
         },
         sort: [{ name: { order: 'asc' } }],
-        size: 20,
+        size: this.configService.get<number>('SEARCH_RESULTS_SIZE', 20),
       },
     };
 

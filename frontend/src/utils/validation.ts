@@ -8,9 +8,16 @@ export const validateEmail = (email: string): boolean => {
 };
 
 /**
- * Validates password strength
+ * Validates password strength (simple version for login)
  */
-export const validatePassword = (password: string): {
+export const validatePassword = (password: string): boolean => {
+  return password.length >= VALIDATION.PASSWORD_MIN_LENGTH;
+};
+
+/**
+ * Validates password strength (detailed version for registration)
+ */
+export const validatePasswordStrength = (password: string): {
   isValid: boolean;
   errors: string[];
 } => {
@@ -44,15 +51,14 @@ export const validatePassword = (password: string): {
 export const validateName = (name: string): boolean => {
   return name.length >= VALIDATION.NAME_MIN_LENGTH && 
          name.length <= VALIDATION.NAME_MAX_LENGTH &&
-         /^[a-zA-Z\s]+$/.test(name);
+         VALIDATION.NAME_REGEX.test(name);
 };
 
 /**
  * Validates phone number format
  */
 export const validatePhone = (phone: string): boolean => {
-  const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-  return phoneRegex.test(phone.replace(/\s/g, ''));
+  return VALIDATION.PHONE_REGEX.test(phone.replace(/\s/g, ''));
 };
 
 /**

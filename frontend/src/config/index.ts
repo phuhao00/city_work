@@ -1,9 +1,9 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: __DEV__ 
-    ? 'http://localhost:3000' 
-    : 'https://your-production-api.com',
-  TIMEOUT: 10000,
+  BASE_URL: process.env.EXPO_PUBLIC_API_BASE_URL || (__DEV__ 
+    ? 'http://localhost:3000/api' 
+    : 'https://your-production-api.com/api'),
+  TIMEOUT: parseInt(process.env.EXPO_PUBLIC_API_TIMEOUT || '10000'),
   RETRY_ATTEMPTS: 3,
 };
 
@@ -15,12 +15,13 @@ export const APP_CONFIG = {
 };
 
 // Storage Keys
+const STORAGE_PREFIX = process.env.EXPO_PUBLIC_STORAGE_PREFIX || '@city_work:';
 export const STORAGE_KEYS = {
-  AUTH_TOKEN: '@city_work:auth_token',
-  USER_DATA: '@city_work:user_data',
-  THEME: '@city_work:theme',
-  LANGUAGE: '@city_work:language',
-  ONBOARDING_COMPLETED: '@city_work:onboarding_completed',
+  AUTH_TOKEN: `${STORAGE_PREFIX}auth_token`,
+  USER_DATA: `${STORAGE_PREFIX}user_data`,
+  THEME: `${STORAGE_PREFIX}theme`,
+  LANGUAGE: `${STORAGE_PREFIX}language`,
+  ONBOARDING_COMPLETED: `${STORAGE_PREFIX}onboarding_completed`,
 };
 
 // API Endpoints
@@ -68,19 +69,22 @@ export const PAGINATION = {
 
 // File Upload
 export const FILE_UPLOAD = {
-  MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB
+  MAX_FILE_SIZE: parseInt(process.env.EXPO_PUBLIC_MAX_FILE_SIZE || '5242880'), // 5MB default
   ALLOWED_IMAGE_TYPES: ['image/jpeg', 'image/png', 'image/gif'],
   ALLOWED_DOCUMENT_TYPES: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+  ALLOWED_FILE_TYPES: process.env.EXPO_PUBLIC_ALLOWED_FILE_TYPES?.split(',') || ['image/jpeg', 'image/png', 'application/pdf'],
 };
 
-// Validation
+// Validation Configuration
 export const VALIDATION = {
   EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  NAME_REGEX: /^[a-zA-Z\s]+$/,
+  PHONE_REGEX: /^[\+]?[1-9][\d]{0,15}$/,
   PASSWORD_MIN_LENGTH: 8,
   NAME_MIN_LENGTH: 2,
-  NAME_MAX_LENGTH: 50,
-  BIO_MAX_LENGTH: 500,
-  MESSAGE_MAX_LENGTH: 1000,
+  NAME_MAX_LENGTH: parseInt(process.env.EXPO_PUBLIC_NAME_MAX_LENGTH || '50'),
+  BIO_MAX_LENGTH: parseInt(process.env.EXPO_PUBLIC_BIO_MAX_LENGTH || '500'),
+  MESSAGE_MAX_LENGTH: parseInt(process.env.EXPO_PUBLIC_MESSAGE_MAX_LENGTH || '1000'),
 };
 
 // Theme
@@ -114,9 +118,10 @@ export const THEME = {
 // Feature Flags
 export const FEATURES = {
   MESSAGING_ENABLED: true,
-  PUSH_NOTIFICATIONS_ENABLED: true,
-  ANALYTICS_ENABLED: !__DEV__,
+  PUSH_NOTIFICATIONS_ENABLED: process.env.EXPO_PUBLIC_ENABLE_PUSH_NOTIFICATIONS === 'true',
+  ANALYTICS_ENABLED: process.env.EXPO_PUBLIC_ENABLE_ANALYTICS === 'true' || !__DEV__,
   CRASH_REPORTING_ENABLED: !__DEV__,
   DARK_MODE_ENABLED: true,
   BIOMETRIC_AUTH_ENABLED: true,
+  DEBUG_MODE: process.env.EXPO_PUBLIC_DEBUG === 'true' || __DEV__,
 };
