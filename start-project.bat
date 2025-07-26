@@ -24,27 +24,37 @@ if not exist node_modules (
 start "Backend Server" cmd /k "npm run start:dev"
 cd ..
 
-echo [4/4] 安装前端依赖并启动前端服务...
+echo [4/4] 安装前端依赖并启动前端Web服务...
 cd frontend
 if not exist node_modules (
     echo 安装前端依赖...
     call npm install
 )
-start "Frontend Server" cmd /k "npm start"
+
+echo 启动前端Web服务...
+start "Frontend Web Server" cmd /k "npm run web"
+
+echo 等待前端服务启动...
+timeout /t 8 /nobreak > nul
+
+echo 正在浏览器中打开应用...
+start http://localhost:19006
+
 cd ..
 
 echo.
 echo ========================================
 echo           启动完成！
 echo ========================================
-echo 后端服务: http://localhost:3000
-echo 前端服务: 请查看Expo开发工具
-echo 数据库管理:
+echo 🌐 前端Web应用: http://localhost:19006 (已自动打开)
+echo 🔧 后端API服务: http://localhost:3000
+echo 📊 数据库管理:
 echo   - MongoDB: localhost:27017
 echo   - Elasticsearch: http://localhost:9200
 echo   - Redis Commander: http://localhost:8081
 echo   - Kibana: http://localhost:5601
 echo ========================================
 echo.
-echo 按任意键退出...
+echo ✅ 项目已完全启动，您可以直接在浏览器中使用应用！
+echo 按任意键退出启动脚本（不会关闭服务）...
 pause > nul

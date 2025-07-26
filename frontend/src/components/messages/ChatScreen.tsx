@@ -16,7 +16,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import {
   useGetConversationQuery,
   useSendMessageMutation,
-  useMarkMessagesAsReadMutation,
+  useMarkAsReadMutation,
 } from '../../services/messagingApi';
 
 interface ChatScreenProps {
@@ -45,7 +45,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ route, navigation }) => 
   } = useGetConversationQuery(conversationId);
 
   const [sendMessage] = useSendMessageMutation();
-  const [markAsRead] = useMarkMessagesAsReadMutation();
+  const [markAsRead] = useMarkAsReadMutation();
 
   useEffect(() => {
     // Set navigation title

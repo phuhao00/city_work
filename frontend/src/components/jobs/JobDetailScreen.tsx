@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useTheme } from '../../theme/ThemeProvider';
-import { useGetJobQuery } from '../../services/jobsApi';
+import { useGetJobByIdQuery } from '../../services/jobsApi';
 
 interface JobDetailScreenProps {
   route: {
@@ -28,7 +28,7 @@ export const JobDetailScreen: React.FC<JobDetailScreenProps> = ({ route, navigat
     isLoading,
     error,
     refetch
-  } = useGetJobQuery(jobId);
+  } = useGetJobByIdQuery(jobId);
 
   const formatSalary = (min?: number, max?: number) => {
     if (!min && !max) return 'Salary not specified';
