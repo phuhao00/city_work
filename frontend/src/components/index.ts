@@ -1,42 +1,35 @@
-// Auth components
-export { LoginScreen } from './auth/LoginScreen';
-export { RegisterScreen } from './auth/RegisterScreen';
+// Enhanced UI Components
+export * from './ui';
 
-// Job components
-export { JobListScreen } from './jobs/JobListScreen';
-export { JobDetailScreen } from './jobs/JobDetailScreen';
+// Enhanced Screen Components
+export { default as EnhancedHomeScreen } from './home/EnhancedHomeScreen';
+export { default as EnhancedLoginScreen } from './auth/EnhancedLoginScreen';
+export { default as EnhancedJobListScreen } from './jobs/EnhancedJobListScreen';
+export { default as EnhancedJobDetailScreen } from './jobs/EnhancedJobDetailScreen';
+export { default as EnhancedProfileScreen } from './profile/EnhancedProfileScreen';
+export { default as EnhancedMyApplicationsScreen } from './applications/EnhancedMyApplicationsScreen';
+export { default as EnhancedSettingsScreen } from './settings/EnhancedSettingsScreen';
+export { default as ComponentShowcaseScreen } from './showcase/ComponentShowcaseScreen';
 
-// Search components
-export { SearchScreen } from './search/SearchScreen';
+// Original Screen Components
+export { default as HomeScreen } from './HomeScreen';
+export { default as LoginScreen } from './LoginScreen';
+export { default as JobListScreen } from './JobListScreen';
+export { default as ProfileScreen } from './ProfileScreen';
+export { default as SearchScreen } from './SearchScreen';
+export { default as ApplicationsScreen } from './ApplicationsScreen';
+export { default as ApplicationDetailScreen } from './ApplicationDetailScreen';
+export { default as MyApplicationsScreen } from './MyApplicationsScreen';
+export { default as AdvancedSearchScreen } from './AdvancedSearchScreen';
 
-// Home components
-export { HomeScreen } from './home/HomeScreen';
-
-// Profile components
-export { ProfileScreen } from './profile/ProfileScreen';
-
-// Messages components
-export { MessagesScreen } from './messages/MessagesScreen';
-export { ChatScreen } from './messages/ChatScreen';
-
-// Feed components
-export { FeedScreen } from './feed/FeedScreen';
-export { CreatePostModal } from './feed/CreatePostModal';
-
-// Network components
-export { NetworkScreen } from './network/NetworkScreen';
-
-// Notifications components
-export { NotificationsScreen } from './notifications/NotificationsScreen';
-
-// Company components
-export { CompanyProfileScreen } from './companies/CompanyProfileScreen';
-
-// Applications components
-export { ApplicationsScreen } from './applications/ApplicationsScreen';
-
-// Settings components
-export { SettingsScreen } from './settings/SettingsScreen';
-
-// Analytics components
-export { CompanyAnalyticsScreen } from './analytics/CompanyAnalyticsScreen';
+// Advanced Feature Components
+export { default as AnalyticsDashboardScreen } from './AnalyticsDashboardScreen';
+export { default as AIInterviewAssistantScreen } from './AIInterviewAssistantScreen';
+export { default as AdvancedNotificationScreen } from './AdvancedNotificationScreen';
+export { default as CompanyCertificationScreen } from './CompanyCertificationScreen';
+export { default as AdvancedSearchScreen } from './AdvancedSearchScreen';
+export { default as CareerPlanningScreen } from './CareerPlanningScreen';
+export { default as SocialNetworkScreen } from './SocialNetworkScreen';
+export { default as SecurityPrivacyScreen } from './SecurityPrivacyScreen';
+export { default as ResponsiveLayout } from './ResponsiveLayout';
+export { default as PerformanceMonitorScreen } from './PerformanceMonitorScreen';
