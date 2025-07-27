@@ -12,24 +12,23 @@ export { default as EnhancedSettingsScreen } from './settings/EnhancedSettingsSc
 export { default as ComponentShowcaseScreen } from './showcase/ComponentShowcaseScreen';
 
 // Original Screen Components
-export { default as HomeScreen } from './HomeScreen';
-export { default as LoginScreen } from './LoginScreen';
-export { default as JobListScreen } from './JobListScreen';
-export { default as ProfileScreen } from './ProfileScreen';
-export { default as SearchScreen } from './SearchScreen';
-export { default as ApplicationsScreen } from './ApplicationsScreen';
-export { default as ApplicationDetailScreen } from './ApplicationDetailScreen';
-export { default as MyApplicationsScreen } from './MyApplicationsScreen';
-export { default as AdvancedSearchScreen } from './AdvancedSearchScreen';
+export { HomeScreen } from './home/HomeScreen';
+export { LoginScreen } from './auth/LoginScreen';
+export { JobListScreen } from './jobs/JobListScreen';
+export { ProfileScreen } from './profile/ProfileScreen';
+export { SearchScreen } from './search/SearchScreen';
+export { ApplicationsScreen } from './applications/ApplicationsScreen';
+export { ApplicationDetailScreen } from './applications/ApplicationDetailScreen';
+export { MyApplicationsScreen } from './applications/MyApplicationsScreen';
+export { default as AdvancedSearchScreen } from './search/AdvancedSearchScreen';
 
 // Advanced Feature Components
-export { default as AnalyticsDashboardScreen } from './AnalyticsDashboardScreen';
-export { default as AIInterviewAssistantScreen } from './AIInterviewAssistantScreen';
-export { default as AdvancedNotificationScreen } from './AdvancedNotificationScreen';
-export { default as CompanyCertificationScreen } from './CompanyCertificationScreen';
-export { default as AdvancedSearchScreen } from './AdvancedSearchScreen';
-export { default as CareerPlanningScreen } from './CareerPlanningScreen';
-export { default as SocialNetworkScreen } from './SocialNetworkScreen';
-export { default as SecurityPrivacyScreen } from './SecurityPrivacyScreen';
-export { default as ResponsiveLayout } from './ResponsiveLayout';
-export { default as PerformanceMonitorScreen } from './PerformanceMonitorScreen';
+export { default as AnalyticsDashboardScreen } from './analytics/AnalyticsDashboardScreen';
+export { default as AIInterviewAssistantScreen } from './interview/AIInterviewAssistantScreen';
+export { default as AdvancedNotificationScreen } from './notifications/NotificationCenterScreen';
+export { default as CompanyCertificationScreen } from './certification/CompanyCertificationScreen';
+export { default as CareerPlanningScreen } from './career/CareerPlanningScreen';
+export { default as SocialNetworkScreen } from './social/SocialNetworkScreen';
+export { default as SecurityPrivacyScreen } from './security/SecurityPrivacyScreen';
+export { default as ResponsiveLayout } from './layout/ResponsiveLayout';
+export { default as PerformanceMonitorScreen } from './performance/PerformanceMonitorScreen';

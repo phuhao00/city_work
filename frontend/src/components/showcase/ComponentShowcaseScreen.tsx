@@ -6,7 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '../../theme/ThemeContext';
 import {
   EnhancedButton,
   EnhancedInput,
