@@ -106,4 +106,12 @@ export class JobsService {
       .populate('jobId')
       .exec();
   }
+
+  async findById(id: string): Promise<Job> {
+    return this.findOne(id);
+  }
+
+  async getAppliedJobs(userId: string): Promise<Application[]> {
+    return this.getUserApplications(userId);
+  }
 }

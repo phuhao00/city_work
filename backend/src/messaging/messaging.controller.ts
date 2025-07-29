@@ -23,7 +23,7 @@ export class MessagingController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Recipient not found' })
-  create(@Body() createMessageDto: CreateMessageDto, @Request() req) {
+  create(@Body() createMessageDto: CreateMessageDto, @Request() req: any) {
     return this.messagingService.create(req.user.id, createMessageDto);
   }
 
@@ -31,7 +31,7 @@ export class MessagingController {
   @ApiOperation({ summary: 'Get all conversations for the current user' })
   @ApiResponse({ status: 200, description: 'Conversations retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  findUserConversations(@Request() req) {
+  findUserConversations(@Request() req: any) {
     return this.messagingService.findUserConversations(req.user.id);
   }
 
@@ -40,7 +40,7 @@ export class MessagingController {
   @ApiResponse({ status: 200, description: 'Conversation retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  findConversation(@Param('userId') userId: string, @Request() req) {
+  findConversation(@Param('userId') userId: string, @Request() req: any) {
     return this.messagingService.findConversation(req.user.id, userId);
   }
 
@@ -49,7 +49,7 @@ export class MessagingController {
   @ApiResponse({ status: 200, description: 'Message marked as read successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Message not found or not authorized' })
-  markAsRead(@Param('id') id: string, @Request() req) {
+  markAsRead(@Param('id') id: string, @Request() req: any) {
     return this.messagingService.markAsRead(id, req.user.id);
   }
 }

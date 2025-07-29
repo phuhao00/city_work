@@ -11,6 +11,9 @@ export enum UserRole {
 
 @Schema({ timestamps: true })
 export class User {
+  _id?: string;
+  id?: string;
+
   @Prop({ required: true })
   name: string;
 
@@ -43,3 +46,13 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+// Virtual for id
+UserSchema.virtual('id').get(function() {
+  return this._id.toString();
+});
+
+// Ensure virtual fields are serialised
+UserSchema.set('toJSON', {
+  virtuals: true
+});

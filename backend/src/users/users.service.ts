@@ -16,8 +16,13 @@ export class UsersService {
     return createdUser.save();
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  async findAll(role?: string): Promise<User[]> {
+    const filter = role ? { role } : {};
+    return this.userModel.find(filter).exec();
+  }
+
+  async findById(id: string): Promise<User> {
+    return this.findOne(id);
   }
 
   async findOne(id: string): Promise<User> {

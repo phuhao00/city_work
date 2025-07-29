@@ -4,12 +4,11 @@ import {
   Text,
   StyleSheet,
   Animated,
-  PanGestureHandler,
-  State,
   TouchableOpacity,
   Dimensions,
   Platform,
 } from 'react-native';
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { debounce, throttle } from '../../utils/PerformanceUtils';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');

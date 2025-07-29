@@ -10,6 +10,15 @@ export class MessagingService {
     @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
   ) {}
 
+  async create(userId: string, createMessageDto: CreateMessageDto): Promise<Message> {
+    const messageData = {
+      ...createMessageDto,
+      senderId: userId,
+    };
+    const message = new this.messageModel(messageData);
+    return message.save();
+  }
+
   async sendMessage(createMessageDto: CreateMessageDto): Promise<Message> {
     const message = new this.messageModel(createMessageDto);
     return message.save();
@@ -27,6 +36,14 @@ export class MessagingService {
       .populate('senderId', 'name avatar')
       .populate('recipientId', 'name avatar')
       .exec();
+  }
+
+  async findUserConversations(userId: string): Promise<any[]> {
+    return this.getConversations(userId);
+  }
+
+  async findConversation(userId1: string, userId2: string): Promise<Message[]> {
+    return this.getConversation(userId1, userId2);
   }
 
   async getConversations(userId: string): Promise<any[]> {
@@ -92,10 +109,11 @@ export class MessagingService {
     return conversations;
   }
 
-  async markAsRead(messageId: string): Promise<Message> {
-    return this.messageModel
+  async markAsRead(messageId: string, userId?: string): Promise<Message> {
+    const result = await this.messageModel
       .findByIdAndUpdate(messageId, { isRead: true }, { new: true })
       .exec();
+    return result!;
   }
 
   async markConversationAsRead(userId: string, otherUserId: string): Promise<void> {

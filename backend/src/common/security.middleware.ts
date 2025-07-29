@@ -1,26 +1,31 @@
-import { Request, Response, NextFunction } from 'express';
+import { Express, Request, Response, NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
-import { body, validationResult } from 'express-validator';
+const validator = require('express-validator');
+const { body, validationResult } = validator;
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import { User, UserRole } from '../users/schemas/user.schema';
+
+// 扩展Request接口以包含user属性
+declare module 'express-serve-static-core' {
+  interface Request {
+    user?: any;
+    file?: any;
+  }
+}
 
 // 速率限制配置
 export const createRateLimiter = (windowMs: number, max: number, message?: string) => {
   return rateLimit({
     windowMs,
     max,
-    message: message || {
-      error: 'Too many requests',
-      message: '请求过于频繁，请稍后再试',
-      retryAfter: Math.ceil(windowMs / 1000),
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-    handler: (req: Request, res: Response) => {
+    message: message || 'Too many requests from this IP, please try again later.',
+
+    handler: (req: any, res: any) => {
       res.status(429).json({
         error: 'Rate limit exceeded',
         message: '请求频率超限，请稍后再试',
@@ -86,7 +91,7 @@ export const securityMiddleware = [
   compression({
     level: 6,
     threshold: 1024,
-    filter: (req, res) => {
+    filter: (req: any, res: any) => {
       if (req.headers['x-no-compression']) {
         return false;
       }
@@ -129,7 +134,7 @@ export const requireRole = (roles: string[]) => {
       });
     }
 
-    if (!roles.includes(req.user.role)) {
+    if (!roles.includes((req.user as any).role)) {
       return res.status(403).json({
         error: 'Insufficient permissions',
         message: '权限不足',
@@ -211,7 +216,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
       duration,
       ip,
       userAgent: headers['user-agent'],
-      userId: req.user?.id,
+      userId: (req.user as any)?._id || (req.user as any)?.id,
     }));
   });
 

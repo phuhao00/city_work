@@ -88,8 +88,8 @@ export class JobsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden - Requires jobseeker role' })
   @ApiResponse({ status: 404, description: 'Job not found' })
-  apply(@Param('id') id: string, @Request() req) {
-    return this.jobsService.applyForJob(id, req.user.id);
+  apply(@Param('id') id: string, @Request() req: any, @Body() applyJobDto: any) {
+    return this.jobsService.applyForJob(id, req.user.id, applyJobDto);
   }
 
   @Post(':id/save')
@@ -97,7 +97,7 @@ export class JobsController {
   @ApiResponse({ status: 200, description: 'Job saved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Job not found' })
-  save(@Param('id') id: string, @Request() req) {
+  save(@Param('id') id: string, @Request() req: any) {
     return this.jobsService.saveJob(id, req.user.id);
   }
 
@@ -105,7 +105,7 @@ export class JobsController {
   @ApiOperation({ summary: 'Get saved jobs for the current user' })
   @ApiResponse({ status: 200, description: 'Saved jobs retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  getSavedJobs(@Request() req) {
+  getSavedJobs(@Request() req: any) {
     return this.jobsService.getSavedJobs(req.user.id);
   }
 
@@ -116,7 +116,7 @@ export class JobsController {
   @ApiResponse({ status: 200, description: 'Applied jobs retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden - Requires jobseeker role' })
-  getAppliedJobs(@Request() req) {
+  getAppliedJobs(@Request() req: any) {
     return this.jobsService.getAppliedJobs(req.user.id);
   }
 }

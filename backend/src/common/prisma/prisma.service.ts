@@ -40,8 +40,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
     return await this.$transaction(
       models.map((model) => {
-        if (typeof model === 'string' && this[model] && typeof this[model].deleteMany === 'function') {
-          return this[model].deleteMany({});
+        if (typeof model === 'string' && (this as any)[model] && typeof (this as any)[model].deleteMany === 'function') {
+          return (this as any)[model].deleteMany({});
         }
         return Promise.resolve();
       }),

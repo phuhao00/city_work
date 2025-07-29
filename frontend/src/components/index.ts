@@ -14,7 +14,9 @@ export { default as ComponentShowcaseScreen } from './showcase/ComponentShowcase
 // Original Screen Components
 export { HomeScreen } from './home/HomeScreen';
 export { LoginScreen } from './auth/LoginScreen';
+export { RegisterScreen } from './auth/RegisterScreen';
 export { JobListScreen } from './jobs/JobListScreen';
+export { JobDetailScreen } from './jobs/JobDetailScreen';
 export { ProfileScreen } from './profile/ProfileScreen';
 export { SearchScreen } from './search/SearchScreen';
 export { ApplicationsScreen } from './applications/ApplicationsScreen';
@@ -22,8 +24,24 @@ export { ApplicationDetailScreen } from './applications/ApplicationDetailScreen'
 export { MyApplicationsScreen } from './applications/MyApplicationsScreen';
 export { default as AdvancedSearchScreen } from './search/AdvancedSearchScreen';
 
+// Messaging Components
+export { MessagesScreen } from './messages/MessagesScreen';
+export { ChatScreen } from './messages/ChatScreen';
+
+// Company Components
+export { CompanyProfileScreen } from './companies/CompanyProfileScreen';
+export { CompanyDetailScreen } from './companies/CompanyDetailScreen';
+
+// Notification Components
+export { NotificationsScreen } from './notifications/NotificationsScreen';
+export { NotificationCenterScreen } from './notifications/NotificationCenterScreen';
+
+// Settings Components
+export { SettingsScreen } from './settings/SettingsScreen';
+
 // Advanced Feature Components
 export { default as AnalyticsDashboardScreen } from './analytics/AnalyticsDashboardScreen';
+export { CompanyAnalyticsScreen } from './analytics/CompanyAnalyticsScreen';
 export { default as AIInterviewAssistantScreen } from './interview/AIInterviewAssistantScreen';
 export { default as AdvancedNotificationScreen } from './notifications/NotificationCenterScreen';
 export { default as CompanyCertificationScreen } from './certification/CompanyCertificationScreen';

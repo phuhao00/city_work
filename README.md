@@ -1,4 +1,4 @@
-# 🎉 City Work - 现代化智慧城市管理平台
+# 🏙️ City Work - 智慧城市管理平台
 
 [![项目状态](https://img.shields.io/badge/状态-✅%20完成-brightgreen)](https://github.com/your-username/city-work)
 [![技术栈](https://img.shields.io/badge/技术栈-React%20Native%20%2B%20Node.js-blue)](https://github.com/your-username/city-work)
@@ -6,6 +6,36 @@
 [![组件数量](https://img.shields.io/badge/组件数量-27个-orange)](https://github.com/your-username/city-work)
 
 一个功能完整的现代化智慧城市管理平台，集成了求职招聘、市政管理、系统监控、团队协作等全方位功能。采用 React Native + Node.js 全栈架构，提供企业级的城市管理解决方案。
+
+## 🚀 快速启动
+
+### 一键启动（推荐）
+```bash
+# Windows 用户
+quick-start.bat
+
+# Linux/Mac 用户
+./quick-start.sh
+```
+
+### 手动启动
+```bash
+# 完整项目启动（包含数据库）
+# Windows
+scripts\start-project.bat
+
+# Linux/Mac
+./scripts/start-project.sh
+
+# 仅开发环境（不启动数据库）
+scripts\start-dev-only.bat
+
+# Web版本快速体验
+scripts\launch-web.bat
+```
+
+### 📁 脚本说明
+所有启动脚本已整理到 `scripts/` 目录，详细说明请查看 [scripts/README.md](scripts/README.md)
 
 ## ✨ 核心功能
 

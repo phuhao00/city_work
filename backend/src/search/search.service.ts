@@ -9,6 +9,16 @@ export class SearchService {
     private readonly configService: ConfigService,
   ) {}
 
+  async search(query: string) {
+    const jobResults = await this.searchJobs(query);
+    const companyResults = await this.searchCompanies(query);
+    
+    return {
+      jobs: jobResults,
+      companies: companyResults,
+    };
+  }
+
   async searchJobs(query: string, filters?: any) {
     const searchQuery = {
       index: 'jobs',
@@ -37,7 +47,7 @@ export class SearchService {
 
     try {
       const response = await this.elasticsearchService.search(searchQuery);
-      return response.body.hits.hits.map((hit: any) => ({
+      return response.hits.hits.map((hit: any) => ({
         id: hit._id,
         ...hit._source,
         score: hit._score,
@@ -67,7 +77,7 @@ export class SearchService {
 
     try {
       const response = await this.elasticsearchService.search(searchQuery);
-      return response.body.hits.hits.map((hit: any) => ({
+      return response.hits.hits.map((hit: any) => ({
         id: hit._id,
         ...hit._source,
         score: hit._score,
@@ -97,7 +107,7 @@ export class SearchService {
 
     try {
       const response = await this.elasticsearchService.search(searchQuery);
-      return response.body.hits.hits.map((hit: any) => ({
+      return response.hits.hits.map((hit: any) => ({
         id: hit._id,
         ...hit._source,
         score: hit._score,

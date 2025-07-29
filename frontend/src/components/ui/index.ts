@@ -1,9 +1,9 @@
 // Enhanced UI Components
-export { default as EnhancedButton } from './EnhancedButton';
-export { default as EnhancedInput } from './EnhancedInput';
-export { default as EnhancedCard } from './EnhancedCard';
-export { default as BottomSheet } from './BottomSheet';
-export { default as Toast, GlobalToast, toastManager } from './Toast';
+export { EnhancedButton } from './EnhancedButton';
+export { EnhancedInput } from './EnhancedInput';
+export { EnhancedCard } from './EnhancedCard';
+export { BottomSheet } from './BottomSheet';
+export { Toast, GlobalToast, toastManager } from './Toast';
 export { default as ThemeSwitcher } from './ThemeSwitcher';
 export { default as OptimizedImage } from './OptimizedImage';
 
@@ -20,13 +20,10 @@ export { default as DataAnalytics } from '../analytics/DataAnalytics';
 
 // Skeleton Components
 export { 
-  default as Skeleton,
+  Skeleton,
   SkeletonCard,
   SkeletonJobCard,
-  SkeletonUserCard,
-  SkeletonText,
-  SkeletonImage,
-  SkeletonButton,
+  SkeletonProfile,
   SkeletonList
 } from './Skeleton';
 

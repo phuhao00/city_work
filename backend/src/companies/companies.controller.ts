@@ -48,7 +48,7 @@ export class CompaniesController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Company not found' })
   findOne(@Param('id') id: string) {
-    return this.companiesService.findById(id);
+    return this.companiesService.findOne(id);
   }
 
   @Patch(':id')
