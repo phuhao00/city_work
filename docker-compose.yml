@@ -46,36 +46,7 @@ services:
     networks:
       - city_work_network
 
-  # Optional: Redis Commander for Redis management
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    container_name: city_work_redis_commander
-    restart: unless-stopped
-    environment:
-      - REDIS_HOSTS=local:redis:6379
-      - REDIS_PASSWORD=redis123
-    ports:
-      - "8081:8081"
-    depends_on:
-      - redis
-    networks:
-      - city_work_network
 
-  # Optional: Kibana for Elasticsearch management
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.11.0
-    container_name: city_work_kibana
-    restart: unless-stopped
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=elastic123
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-    networks:
-      - city_work_network
 
   # Backend API Service
   backend:

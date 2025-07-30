@@ -14,7 +14,6 @@ export { GestureHandler, Draggable, Scalable, SwipeToDelete } from './GestureCom
 
 // System Management Components
 export { default as SystemConfig } from '../settings/SystemConfig';
-export { default as TestingDashboard } from '../testing/TestingDashboard';
 export { default as APIMonitoring } from '../monitoring/APIMonitoring';
 export { default as DataAnalytics } from '../analytics/DataAnalytics';
 
