@@ -33,45 +33,9 @@ export class AppConfig {
     return this.configService.get<string>('DATABASE_URL', this.mongodbUri);
   }
 
-  // Redis Configuration
-  get redisConfig() {
-    return {
-      host: this.configService.get<string>('REDIS_HOST', 'localhost'),
-      port: this.configService.get<number>('REDIS_PORT', 6379),
-      password: this.configService.get<string>('REDIS_PASSWORD') || undefined,
-      retryDelayOnFailover: this.configService.get<number>('REDIS_RETRY_DELAY', 100),
-      enableReadyCheck: this.configService.get<boolean>('REDIS_READY_CHECK', false),
-      maxRetriesPerRequest: this.configService.get<number>('REDIS_MAX_RETRIES') || null,
-      connectTimeout: this.configService.get<number>('REDIS_CONNECT_TIMEOUT', 10000),
-      lazyConnect: this.configService.get<boolean>('REDIS_LAZY_CONNECT', true),
-    };
-  }
 
-  // Elasticsearch Configuration
-  get elasticsearchConfig() {
-    const config: any = {
-      node: this.configService.get<string>('ELASTICSEARCH_NODE', 'http://localhost:9200'),
-      requestTimeout: this.configService.get<number>('ELASTICSEARCH_REQUEST_TIMEOUT', 30000),
-      pingTimeout: this.configService.get<number>('ELASTICSEARCH_PING_TIMEOUT', 3000),
-      maxRetries: this.configService.get<number>('ELASTICSEARCH_MAX_RETRIES', 3),
-    };
 
-    const username = this.configService.get<string>('ELASTICSEARCH_USERNAME');
-    const password = this.configService.get<string>('ELASTICSEARCH_PASSWORD');
-    
-    if (username && password) {
-      config.auth = { username, password };
-    }
 
-    const sslEnabled = this.configService.get<boolean>('ELASTICSEARCH_SSL_ENABLED', false);
-    if (sslEnabled) {
-      config.ssl = {
-        rejectUnauthorized: this.configService.get<boolean>('ELASTICSEARCH_SSL_VERIFY', true),
-      };
-    }
-
-    return config;
-  }
 
   // JWT Configuration
   get jwtConfig() {
@@ -141,7 +105,7 @@ export class AppConfig {
   // Security Configuration
   get securityConfig() {
     return {
-      bcryptSaltRounds: this.configService.get<number>('BCRYPT_SALT_ROUNDS', 10),
+      // No bcrypt configuration needed
     };
   }
 }

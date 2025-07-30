@@ -23,7 +23,7 @@ interface DatabaseManagerProps {
 interface DatabaseConnection {
   id: string;
   name: string;
-  type: 'postgresql' | 'mysql' | 'mongodb' | 'redis' | 'sqlite';
+  type: 'postgresql' | 'mysql' | 'mongodb' | 'sqlite';
   host: string;
   port: number;
   database: string;
@@ -138,22 +138,6 @@ const DatabaseManager: React.FC<DatabaseManagerProps> = ({ navigation }) => {
             options: {
               authSource: 'admin',
               replicaSet: 'rs0',
-            },
-          },
-          {
-            id: '4',
-            name: 'Redis缓存',
-            type: 'redis',
-            host: 'redis.example.com',
-            port: 6379,
-            database: '0',
-            username: '',
-            password: 'redis_password',
-            ssl: false,
-            status: 'disconnected',
-            options: {
-              keyPrefix: 'citywork:',
-              retryDelayOnFailover: 100,
             },
           },
         ];
@@ -498,8 +482,6 @@ const DatabaseManager: React.FC<DatabaseManagerProps> = ({ navigation }) => {
         return 'server';
       case 'mongodb':
         return 'leaf';
-      case 'redis':
-        return 'flash';
       case 'sqlite':
         return 'document';
       default:
@@ -882,7 +864,7 @@ const DatabaseManager: React.FC<DatabaseManagerProps> = ({ navigation }) => {
                   数据库类型
                 </Text>
                 <View style={styles.typeSelector}>
-                  {(['postgresql', 'mysql', 'mongodb', 'redis', 'sqlite'] as const).map((type) => (
+                  {(['postgresql', 'mysql', 'mongodb', 'sqlite'] as const).map((type) => (
                     <TouchableOpacity
                       key={type}
                       style={[

@@ -191,16 +191,6 @@ const PerformanceOptimizer: React.FC = () => {
         priority: 1,
       },
       {
-        id: '2',
-        title: '实施Redis缓存策略',
-        description: '对频繁访问的数据实施Redis缓存，减少数据库查询压力',
-        impact: 'high',
-        effort: 'medium',
-        category: '缓存',
-        estimatedImprovement: '数据库负载减少40%',
-        priority: 2,
-      },
-      {
         id: '3',
         title: '优化前端资源加载',
         description: '启用Gzip压缩、CDN加速和资源懒加载',

@@ -384,7 +384,7 @@ REACT_APP_API_BASE_URL=http://localhost:3000/api
 
 ### 1. 启动数据库服务
 
-使用 Docker Compose 启动 MongoDB、Elasticsearch 和 Redis：
+使用 Docker Compose 启动 MongoDB 和 Elasticsearch：
 
 ```bash
 docker-compose up -d
@@ -393,9 +393,7 @@ docker-compose up -d
 这将启动以下服务：
 - **MongoDB**: `localhost:27017`
 - **Elasticsearch**: `localhost:9200`
-- **Redis**: `localhost:6379`
 - **Kibana** (可选): `localhost:5601`
-- **Redis Commander** (可选): `localhost:8081`
 
 ### 2. 后端设置
 
@@ -424,11 +422,6 @@ npm start
 ```env
 # Database
 MONGODB_URI=mongodb://admin:password123@localhost:27017/city_work?authSource=admin
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_PASSWORD=redis123
 
 # Elasticsearch
 ELASTICSEARCH_NODE=http://localhost:9200

@@ -69,11 +69,11 @@ export const mockJobs = [
     type: 'FULL_TIME',
     salaryMin: 18000,
     salaryMax: 30000,
-    skills: ['Node.js', 'Express', 'MongoDB', 'Redis'],
+    skills: ['Node.js', 'Express', 'MongoDB'],
     requirements: [
       '3年以上Node.js开发经验',
       '熟悉Express框架',
-      '熟悉MongoDB、Redis等数据库',
+      '熟悉MongoDB等数据库',
       '有微服务架构经验优先',
     ],
     benefits: ['五险一金', '股票期权', '年终奖', '带薪年假'],

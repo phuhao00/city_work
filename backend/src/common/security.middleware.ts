@@ -6,7 +6,7 @@ import compression from 'compression';
 const validator = require('express-validator');
 const { body, validationResult } = validator;
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+
 import crypto from 'crypto';
 import { User, UserRole } from '../users/schemas/user.schema';
 
@@ -365,15 +365,14 @@ export const encryptionUtils = {
 
 // 密码工具
 export const passwordUtils = {
-  // 哈希密码
+  // 直接返回密码（明文存储）
   hash: async (password: string): Promise<string> => {
-    const saltRounds = 12;
-    return bcrypt.hash(password, saltRounds);
+    return password;
   },
 
-  // 验证密码
+  // 直接比较密码
   verify: async (password: string, hash: string): Promise<boolean> => {
-    return bcrypt.compare(password, hash);
+    return password === hash;
   },
 
   // 生成强密码
@@ -420,9 +419,7 @@ export const securityConfig = {
     expiresIn: '24h',
     refreshExpiresIn: '7d',
   },
-  bcrypt: {
-    saltRounds: 12,
-  },
+
   rateLimit: {
     windowMs: 15 * 60 * 1000, // 15分钟
     max: 100, // 最大请求数

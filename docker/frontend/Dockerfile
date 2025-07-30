@@ -4,8 +4,7 @@ FROM node:18-alpine
 # Set working directory
 WORKDIR /app
 
-# Install global dependencies
-RUN npm install -g @expo/cli
+# Install global dependencies (removed @expo/cli for faster build)
 
 # Copy package files
 COPY package*.json ./
@@ -14,19 +13,19 @@ COPY babel.config.js ./
 COPY tsconfig.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY src/ ./src/
 COPY App.tsx ./
-COPY assets/ ./assets/
+COPY index.js ./
 
 # Expose port for Expo web
-EXPOSE 19006
+EXPOSE 19007
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD curl -f http://localhost:19006 || exit 1
+  CMD curl -f http://localhost:19007 || exit 1
 
 # Start Expo web
-CMD ["npx", "expo", "start", "--web", "--port", "19006"]
+CMD ["npx", "expo", "start", "--web", "--port", "19007"]

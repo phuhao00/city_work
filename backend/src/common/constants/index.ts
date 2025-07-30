@@ -154,7 +154,6 @@ export const NOTIFICATIONS = {
 
 // Security Constants
 export const SECURITY = {
-  BCRYPT_SALT_ROUNDS: 12,
   JWT: {
     ACCESS_TOKEN_EXPIRY: '15m',
     REFRESH_TOKEN_EXPIRY: '7d',
@@ -194,36 +193,6 @@ export const DATABASE = {
   },
 } as const;
 
-// Redis Constants
-export const REDIS = {
-  DEFAULT_TTL: 3600,
-  CONNECTION: {
-    RETRY_DELAY_ON_FAILOVER: 100,
-    ENABLE_READY_CHECK: false,
-    MAX_RETRIES_PER_REQUEST: 3,
-    CONNECT_TIMEOUT: 10000,
-    LAZY_CONNECT: true,
-  },
-} as const;
-
-// Elasticsearch Constants
-export const ELASTICSEARCH = {
-  INDEXES: {
-    JOBS: 'jobs',
-    COMPANIES: 'companies',
-    USERS: 'users',
-  },
-  SETTINGS: {
-    REQUEST_TIMEOUT: 30000,
-    PING_TIMEOUT: 3000,
-    MAX_RETRIES: 3,
-  },
-  SEARCH: {
-    DEFAULT_SIZE: 20,
-    MAX_SIZE: 100,
-    FUZZINESS: 'AUTO',
-  },
-} as const;
 
 // API Constants
 export const API = {
@@ -292,8 +261,6 @@ export const ERROR_MESSAGES = {
     TRANSACTION_ERROR: 'Database transaction error',
   },
   EXTERNAL_SERVICE: {
-    ELASTICSEARCH_ERROR: 'Elasticsearch service error',
-    REDIS_ERROR: 'Redis service error',
     EMAIL_SERVICE_ERROR: 'Email service error',
   },
   FILE: {

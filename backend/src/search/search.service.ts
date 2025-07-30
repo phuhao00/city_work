@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from '../common/database/prisma.service';
 
 @Injectable()
 export class SearchService {
   constructor(
-    private readonly elasticsearchService: ElasticsearchService,
+    private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
   ) {}
 
@@ -20,175 +20,143 @@ export class SearchService {
   }
 
   async searchJobs(query: string, filters?: any) {
-    const searchQuery = {
-      index: 'jobs',
-      body: {
-        query: {
-          bool: {
-            must: query
-              ? [
-                  {
-                    multi_match: {
-                      query,
-                      fields: ['title^2', 'description', 'skills'],
-                      type: 'best_fields',
-                      fuzziness: 'AUTO',
-                    },
-                  },
-                ]
-              : [{ match_all: {} }],
-            filter: this.buildFilters(filters),
-          },
-        },
-        sort: [{ createdAt: { order: 'desc' } }],
-        size: this.configService.get<number>('SEARCH_RESULTS_SIZE', 20),
-      },
-    };
-
     try {
-      const response = await this.elasticsearchService.search(searchQuery);
-      return response.hits.hits.map((hit: any) => ({
-        id: hit._id,
-        ...hit._source,
-        score: hit._score,
-      }));
+      const searchSize = this.configService.get<number>('SEARCH_RESULTS_SIZE', 20);
+      
+      const whereClause: any = {
+        AND: [
+          query ? {
+            OR: [
+              { title: { contains: query, mode: 'insensitive' } },
+              { description: { contains: query, mode: 'insensitive' } },
+              { category: { contains: query, mode: 'insensitive' } },
+            ]
+          } : {},
+          ...this.buildJobFilters(filters)
+        ]
+      };
+
+      const jobs = await this.prisma.job.findMany({
+        where: whereClause,
+        orderBy: { postedAt: 'desc' },
+        take: searchSize,
+        include: {
+          company: {
+            select: {
+              id: true,
+              name: true,
+              logo: true,
+            }
+          }
+        }
+      });
+
+      return jobs;
     } catch (error) {
-      console.error('Elasticsearch search error:', error);
+      console.error('Database search error:', error);
       return [];
     }
   }
 
   async searchCompanies(query: string) {
-    const searchQuery = {
-      index: 'companies',
-      body: {
-        query: {
-          multi_match: {
-            query,
-            fields: ['name^2', 'description', 'industry'],
-            type: 'best_fields',
-            fuzziness: 'AUTO',
-          },
-        },
-        sort: [{ name: { order: 'asc' } }],
-        size: this.configService.get<number>('SEARCH_RESULTS_SIZE', 20),
-      },
-    };
-
     try {
-      const response = await this.elasticsearchService.search(searchQuery);
-      return response.hits.hits.map((hit: any) => ({
-        id: hit._id,
-        ...hit._source,
-        score: hit._score,
-      }));
+      const searchSize = this.configService.get<number>('SEARCH_RESULTS_SIZE', 20);
+      
+      const companies = await this.prisma.company.findMany({
+        where: {
+          OR: [
+            { name: { contains: query, mode: 'insensitive' } },
+            { description: { contains: query, mode: 'insensitive' } },
+            { industry: { contains: query, mode: 'insensitive' } },
+          ]
+        },
+        orderBy: { name: 'asc' },
+        take: searchSize,
+      });
+
+      return companies;
     } catch (error) {
-      console.error('Elasticsearch search error:', error);
+      console.error('Database search error:', error);
       return [];
     }
   }
 
   async searchUsers(query: string) {
-    const searchQuery = {
-      index: 'users',
-      body: {
-        query: {
-          multi_match: {
-            query,
-            fields: ['name^2', 'bio', 'skills'],
-            type: 'best_fields',
-            fuzziness: 'AUTO',
-          },
-        },
-        sort: [{ name: { order: 'asc' } }],
-        size: this.configService.get<number>('SEARCH_RESULTS_SIZE', 20),
-      },
-    };
-
     try {
-      const response = await this.elasticsearchService.search(searchQuery);
-      return response.hits.hits.map((hit: any) => ({
-        id: hit._id,
-        ...hit._source,
-        score: hit._score,
-      }));
+      const searchSize = this.configService.get<number>('SEARCH_RESULTS_SIZE', 20);
+      
+      const users = await this.prisma.user.findMany({
+        where: {
+          OR: [
+            { name: { contains: query, mode: 'insensitive' } },
+            { bio: { contains: query, mode: 'insensitive' } },
+            { bio: { contains: query, mode: 'insensitive' } },
+          ]
+        },
+        orderBy: { name: 'asc' },
+        take: searchSize,
+        select: {
+          id: true,
+          name: true,
+          bio: true,
+          location: true,
+          avatar: true,
+        }
+      });
+
+      return users;
     } catch (error) {
-      console.error('Elasticsearch search error:', error);
+      console.error('Database search error:', error);
       return [];
     }
   }
 
+  // These methods are now no-ops since we're using database directly
   async indexJob(job: any) {
-    try {
-      await this.elasticsearchService.index({
-        index: 'jobs',
-        id: job.id,
-        body: job,
-      });
-    } catch (error) {
-      console.error('Error indexing job:', error);
-    }
+    // No longer needed with database search
+    console.log('Job indexing skipped - using database search');
   }
 
   async indexCompany(company: any) {
-    try {
-      await this.elasticsearchService.index({
-        index: 'companies',
-        id: company.id,
-        body: company,
-      });
-    } catch (error) {
-      console.error('Error indexing company:', error);
-    }
+    // No longer needed with database search
+    console.log('Company indexing skipped - using database search');
   }
 
   async indexUser(user: any) {
-    try {
-      await this.elasticsearchService.index({
-        index: 'users',
-        id: user.id,
-        body: {
-          name: user.name,
-          bio: user.bio,
-          location: user.location,
-          skills: user.skills || [],
-        },
-      });
-    } catch (error) {
-      console.error('Error indexing user:', error);
-    }
+    // No longer needed with database search
+    console.log('User indexing skipped - using database search');
   }
 
-  private buildFilters(filters: any) {
+  private buildJobFilters(filters: any) {
     const filterClauses = [];
 
     if (filters?.location) {
       filterClauses.push({
-        term: { 'location.keyword': filters.location },
+        location: { contains: filters.location, mode: 'insensitive' }
       });
     }
 
     if (filters?.jobType) {
       filterClauses.push({
-        term: { 'type.keyword': filters.jobType },
+        type: filters.jobType
       });
     }
 
     if (filters?.salaryMin) {
       filterClauses.push({
-        range: { salaryMin: { gte: filters.salaryMin } },
+        salaryMin: { gte: filters.salaryMin }
       });
     }
 
     if (filters?.salaryMax) {
       filterClauses.push({
-        range: { salaryMax: { lte: filters.salaryMax } },
+        salaryMax: { lte: filters.salaryMax }
       });
     }
 
     if (filters?.skills && filters.skills.length > 0) {
       filterClauses.push({
-        terms: { 'skills.keyword': filters.skills },
+        skills: { hasSome: filters.skills }
       });
     }
 

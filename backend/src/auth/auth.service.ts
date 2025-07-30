@@ -5,7 +5,6 @@ import { User, UserDocument } from '../users/schemas/user.schema';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -24,15 +23,11 @@ export class AuthService {
       throw new Error('User already exists');
     }
 
-    // Hash password
-    const saltRounds = this.configService.get<number>('BCRYPT_SALT_ROUNDS', 10);
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Create user
+    // Create user with plain text password
     const user = new this.userModel({
       ...userData,
       email,
-      password: hashedPassword,
+      password: password,
     });
 
     await user.save();
@@ -60,7 +55,7 @@ export class AuthService {
     }
 
     // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = password === user.password;
     if (!isPasswordValid) {
       throw new Error('Invalid credentials');
     }
@@ -86,7 +81,7 @@ export class AuthService {
       return null;
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = password === user.password;
     if (!isPasswordValid) {
       return null;
     }

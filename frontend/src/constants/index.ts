@@ -136,7 +136,6 @@ export const NOTIFICATIONS = {
 
 // Security Constants
 export const SECURITY = {
-  BCRYPT_SALT_ROUNDS: 12,
   JWT: {
     ACCESS_TOKEN_EXPIRY: '15m',
     REFRESH_TOKEN_EXPIRY: '7d',

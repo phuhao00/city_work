@@ -2,10 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 
-// Database and Cache modules
+// Database modules
 import { DatabaseModule } from './common/database/database.module';
-import { RedisModule } from './common/redis/redis.module';
-import { SearchModule as ElasticsearchModule } from './common/elasticsearch/elasticsearch.module';
+
 
 // Feature modules
 import { AuthModule } from './auth/auth.module';
@@ -25,8 +24,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
       envFilePath: '.env',
     }),
     DatabaseModule,
-    RedisModule,
-    ElasticsearchModule,
+
     AuthModule,
     UsersModule,
     JobsModule,
