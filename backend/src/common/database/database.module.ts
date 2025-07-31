@@ -4,16 +4,21 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }),
-      inject: [ConfigService],
-    }),
+    ...(process.env.MONGODB_URI ? [
+      MongooseModule.forRootAsync({
+        imports: [ConfigModule],
+        useFactory: async (configService: ConfigService) => {
+          const uri = configService.get<string>('MONGODB_URI');
+          return {
+            uri,
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+          };
+        },
+        inject: [ConfigService],
+      })
+    ] : []),
   ],
-  exports: [MongooseModule],
+  exports: [...(process.env.MONGODB_URI ? [MongooseModule] : [])],
 })
 export class DatabaseModule {}

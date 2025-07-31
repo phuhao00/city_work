@@ -10,20 +10,24 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { User, UserSchema } from '../users/schemas/user.schema';
 import { UsersModule } from '../users/users.module';
 
+const imports: any[] = [
+  UsersModule,
+  PassportModule,
+];
+if (process.env.MONGODB_URI) {
+  imports.push(MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]));
+}
+imports.push(JwtModule.registerAsync({
+  imports: [ConfigModule],
+  useFactory: async (configService: ConfigService) => ({
+    secret: configService.get<string>('JWT_SECRET'),
+    signOptions: { expiresIn: '24h' },
+  }),
+  inject: [ConfigService],
+}));
+
 @Module({
-  imports: [
-    UsersModule,
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    PassportModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '24h' },
-      }),
-      inject: [ConfigService],
-    }),
-  ],
+  imports,
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, LocalStrategy],
   exports: [AuthService],

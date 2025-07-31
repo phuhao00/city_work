@@ -4,10 +4,13 @@ import { MessagingController } from './messaging.controller';
 import { MessagingService } from './messaging.service';
 import { Message, MessageSchema } from './schemas/message.schema';
 
+const imports = [];
+if (process.env.MONGODB_URI) {
+  imports.push(MongooseModule.forFeature([{ name: Message.name, schema: MessageSchema }]));
+}
+
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Message.name, schema: MessageSchema }]),
-  ],
+  imports,
   controllers: [MessagingController],
   providers: [MessagingService],
   exports: [MessagingService],

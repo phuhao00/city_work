@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # mongodb:
-  #   image: mongo:6.0-slim
+  #   image: mongo:5.0
   #   container_name: city_work_mongodb
   #   restart: unless-stopped
   #   environment:
@@ -28,11 +28,11 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DATABASE_URL=mongodb://admin:password123@mongodb:27017/city_work?authSource=admin
+      # - DATABASE_URL=mongodb://admin:password123@mongodb:27017/city_work?authSource=admin
       - JWT_SECRET=your-super-secret-jwt-key-change-in-production
       - JWT_EXPIRES_IN=7d
     ports:
-      - "3000:3000"
+      - "3002:3000"
     # depends_on:
     #   - mongodb
     networks:

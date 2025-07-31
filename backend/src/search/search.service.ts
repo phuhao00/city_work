@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../common/database/prisma.service';
 
 @Injectable()
 export class SearchService {
   constructor(
-    private readonly prisma: PrismaService,
+    @Optional() private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
   ) {}
 

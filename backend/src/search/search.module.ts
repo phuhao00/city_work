@@ -7,7 +7,7 @@ import { PrismaModule } from '../common/database/prisma.module';
 @Module({
   imports: [
     ConfigModule,
-    PrismaModule,
+    ...(process.env.DATABASE_URL ? [PrismaModule] : []),
   ],
   controllers: [SearchController],
   providers: [SearchService],

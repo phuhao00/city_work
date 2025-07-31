@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Optional, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Company, CompanyDocument } from './schemas/company.schema';
@@ -8,7 +8,7 @@ import { UpdateCompanyDto } from './dto/update-company.dto';
 @Injectable()
 export class CompaniesService {
   constructor(
-    @InjectModel(Company.name) private companyModel: Model<CompanyDocument>,
+    @Optional() @InjectModel(Company.name) private companyModel: Model<CompanyDocument>,
   ) {}
 
   async create(createCompanyDto: CreateCompanyDto): Promise<Company> {

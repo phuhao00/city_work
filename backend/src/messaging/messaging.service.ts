@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Message, MessageDocument } from './schemas/message.schema';
@@ -7,7 +7,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 @Injectable()
 export class MessagingService {
   constructor(
-    @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
+    @Optional() @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
   ) {}
 
   async create(userId: string, createMessageDto: CreateMessageDto): Promise<Message> {

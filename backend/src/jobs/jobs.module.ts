@@ -6,14 +6,17 @@ import { Job, JobSchema } from './schemas/job.schema';
 import { Application, ApplicationSchema } from './schemas/application.schema';
 import { SavedJob, SavedJobSchema } from './schemas/saved-job.schema';
 
+const imports = [];
+if (process.env.MONGODB_URI) {
+  imports.push(MongooseModule.forFeature([
+    { name: Job.name, schema: JobSchema },
+    { name: Application.name, schema: ApplicationSchema },
+    { name: SavedJob.name, schema: SavedJobSchema },
+  ]));
+}
+
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Job.name, schema: JobSchema },
-      { name: Application.name, schema: ApplicationSchema },
-      { name: SavedJob.name, schema: SavedJobSchema },
-    ]),
-  ],
+  imports,
   controllers: [JobsController],
   providers: [JobsService],
   exports: [JobsService],
