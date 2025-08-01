@@ -179,7 +179,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* 侧边栏导航 */}
           <div className="lg:col-span-1">
-            <div className="bg-card rounded-lg shadow-sm border border-border p-4">
+           <div className="bg-card rounded-lg shadow-sm border border-border p-4">
               <nav className="space-y-2">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;

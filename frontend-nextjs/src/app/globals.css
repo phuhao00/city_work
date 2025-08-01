@@ -3,6 +3,24 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: #FFFFFF;
+    --card: #F9F9F9;
+    --text: #333333;
+    --border: #E0E0E0;
+    --primary: #4E6BFF;
+    --secondary: #FF6B6B;
+    --gray: #8E8E93;
+  }
+  
+  [data-theme="dark"] {
+    --background: #121212;
+    --card: #1E1E1E;
+    --text: #FFFFFF;
+    --border: #2C2C2C;
+    --primary: #5E7BFF;
+    --secondary: #FF7B7B;
+  }
   * {
     @apply border-border;
   }
